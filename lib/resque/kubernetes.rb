@@ -27,5 +27,8 @@ module Resque
 
     # A `kubeclient` for connection context, default attempts to read from cluster or `~/.kube/config`
     define_setting :kubeclient, nil
+
+    # Whether all API requests should be namespace scoped
+    define_setting :namespace_scope_only, false
   end
 end

@@ -14,8 +14,10 @@ module Resque
       private :owner
 
       def initialize(owner)
-        @owner             = owner
-        @default_namespace = "default"
+        @owner = owner
+
+        context = ContextFactory.context
+        @default_namespace = context&.namespace || "default"
       end
 
       def reap_finished_jobs
@@ -74,7 +76,7 @@ module Resque
       end
 
       def finished_jobs
-        opts = { label_selector: "resque-kubernetes=job" }
+        opts = {label_selector: "resque-kubernetes=job"}
         opts[:namespace] = @default_namespace if Resque::Kubernetes.namespace_scope_only
 
         resque_jobs = jobs_client.get_jobs(opts)
@@ -82,7 +84,7 @@ module Resque
       end
 
       def finished_pods
-        opts = { label_selector: "resque-kubernetes=pod" }
+        opts = {label_selector: "resque-kubernetes=pod"}
         opts[:namespace] = @default_namespace if Resque::Kubernetes.namespace_scope_only
 
         resque_jobs = pods_client.get_pods(opts)

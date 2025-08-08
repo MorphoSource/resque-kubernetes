@@ -75,7 +75,7 @@ module Resque
 
       def finished_jobs
         opts = { label_selector: "resque-kubernetes=job" }
-        opts.merge! { namespace: @default_namespace } if Resque::Kubernetes.namespace_scope_only
+        opts[:namespace] = @default_namespace if Resque::Kubernetes.namespace_scope_only
 
         resque_jobs = jobs_client.get_jobs(opts)
         resque_jobs.select { |job| job.spec.completions == job.status.succeeded }
@@ -83,7 +83,7 @@ module Resque
 
       def finished_pods
         opts = { label_selector: "resque-kubernetes=pod" }
-        opts.merge! { namespace: @default_namespace } if Resque::Kubernetes.namespace_scope_only
+        opts[:namespace] = @default_namespace if Resque::Kubernetes.namespace_scope_only
 
         resque_jobs = pods_client.get_pods(opts)
         resque_jobs.select do |pod|
